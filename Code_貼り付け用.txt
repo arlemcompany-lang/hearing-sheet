@@ -18,7 +18,9 @@ var CONFIG = {
 };
 
 function doPost(e) {
-  var data = JSON.parse(e.postData.contents);
+  // 日本語（マルチバイト文字）の文字化けを防ぐため、クライアント側でBase64化して送信している
+  var jsonStr = Utilities.newBlob(Utilities.base64Decode(e.postData.contents)).getDataAsString('UTF-8');
+  var data = JSON.parse(jsonStr);
 
   var ss = SpreadsheetApp.openById(CONFIG.spreadsheetId);
   var sheet = ss.getSheetByName(CONFIG.sheetName);

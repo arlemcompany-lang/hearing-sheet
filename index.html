@@ -497,7 +497,7 @@
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(data)
+      body: btoa(unescape(encodeURIComponent(JSON.stringify(data))))
     }).then(() => {
       note.textContent = '送信しました。ご協力ありがとうございました。';
       note.classList.add('success');
