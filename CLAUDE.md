@@ -27,7 +27,7 @@ GitHub Pages上のWebフォームとして公開予定。
   - URL: https://docs.google.com/spreadsheets/d/1hktdMhfe7pu9lREHRVJxtstle2CcaGQ7M0awwFTPJg4/edit
 - [x] Apps Scriptにコードを貼り付けてウェブアプリとしてデプロイ済み
 - [x] 発行された `/exec` URLを `index.html` の `GAS_URL` に設定済み・動作確認済み（スプレッドシート追記＋メール通知とも正常）
-- [ ] GitHub Pagesへの公開
+- [x] GitHub Pagesへの公開（`arlemcompany-lang/hearing-sheet`、`https://arlemcompany-lang.github.io/hearing-sheet/`）
 
 ## ファイル構成
 | ファイル | 役割 |

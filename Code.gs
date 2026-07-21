@@ -24,7 +24,7 @@ function doPost(e) {
   var sheet = ss.getSheetByName(CONFIG.sheetName);
   if (!sheet) {
     sheet = ss.insertSheet(CONFIG.sheetName);
-    sheet.appendRow(['タイムスタンプ', 'お名前', '作業名', '作業順序', '使用ツール', '入力データの所在', '提出の仕方']);
+    sheet.appendRow(['タイムスタンプ', 'お名前', 'メールアドレス', '作業名', '作業順序', '使用ツール', '入力データの所在', '提出の仕方']);
   }
 
   var steps = (data.steps || []).map(function (s, i) {
@@ -37,6 +37,7 @@ function doPost(e) {
   sheet.appendRow([
     new Date(),
     data.name || '',
+    data.email || '',
     data.taskName || '',
     steps,
     tools,
@@ -45,6 +46,10 @@ function doPost(e) {
   ]);
 
   sendNotifyEmail(data, ss.getUrl());
+
+  if (data.email) {
+    sendCopyEmail(data, steps, tools, sources, submits);
+  }
 
   return ContentService.createTextOutput(JSON.stringify({ status: 'success' }))
     .setMimeType(ContentService.MimeType.JSON);
@@ -59,4 +64,20 @@ function sendNotifyEmail(data, sheetUrl) {
     'スプレッドシートはこちら：\n' + sheetUrl;
 
   MailApp.sendEmail(CONFIG.notifyEmail, subject, body);
+}
+
+function sendCopyEmail(data, steps, tools, sources, submits) {
+  var subject = '【控え】作業ヒアリングシートのご回答ありがとうございました';
+  var body =
+    (data.name || '') + ' 様\n\n' +
+    'ヒアリングシートへのご回答ありがとうございました。\n' +
+    '以下、ご回答内容の控えです。\n\n' +
+    'お名前：' + (data.name || '') + '\n' +
+    '作業名：' + (data.taskName || '') + '\n\n' +
+    '■ 作業順序\n' + (steps || '(未入力)') + '\n\n' +
+    '■ 使用ツール：' + (tools || '(未選択)') + '\n' +
+    '■ 入力データの所在：' + (sources || '(未選択)') + '\n' +
+    '■ 提出の仕方：' + (submits || '(未選択)') + '\n';
+
+  MailApp.sendEmail(data.email, subject, body);
 }

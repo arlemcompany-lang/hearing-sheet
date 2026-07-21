@@ -271,6 +271,10 @@
         <input type="text" id="userName" placeholder="例）山田 太郎">
       </div>
       <div class="field">
+        <label class="field-label">メールアドレス</label>
+        <input type="email" id="userEmail" placeholder="例）taro@example.com（入力すると回答内容が届きます）">
+      </div>
+      <div class="field">
         <label class="field-label">作業名<span class="req">必須</span></label>
         <input type="text" id="taskName" placeholder="例）月次売上集計">
       </div>
@@ -453,6 +457,7 @@
   // ── 入力内容の取得 ──
   function collectFormData() {
     const name = document.getElementById('userName').value.trim();
+    const email = document.getElementById('userEmail').value.trim();
     const taskName = document.getElementById('taskName').value.trim();
 
     const steps = Array.from(document.querySelectorAll('.step-input'))
@@ -463,7 +468,7 @@
     const sources = getChecked('sourceGroup', 'sourceOther');
     const submits = getChecked('submitGroup', 'submitOther');
 
-    return { name, taskName, steps, tools, sources, submits };
+    return { name, email, taskName, steps, tools, sources, submits };
   }
 
   // ── 送信機能（GAS経由でスプレッドシート保存＋メール通知） ──
@@ -513,6 +518,7 @@
     const lines = [
       '【作業ヒアリングシート】',
       `お名前：${data.name || '(未入力)'}`,
+      `メールアドレス：${data.email || '(未入力)'}`,
       `作業名：${data.taskName || '(未入力)'}`,
       '',
       '■ 作業順序',
