@@ -47,6 +47,10 @@ function doPost(e) {
     submits
   ]);
 
+  // 作業順序は手順ごとに改行しているため、セル内で折り返して全行見えるようにする
+  var lastRow = sheet.getLastRow();
+  sheet.getRange(lastRow, 5).setWrap(true).setVerticalAlignment('top');
+
   sendNotifyEmail(data, ss.getUrl());
 
   if (data.email) {
