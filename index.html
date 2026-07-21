@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作業ヒアリングシート</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    background: #f4f6f8;
+    color: #2c333a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px 80px;
+  }
+
+  .sheet {
+    width: 100%;
+    max-width: 640px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1c2a38;
+    letter-spacing: 0.03em;
+  }
+
+  header p {
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: #6b7680;
+    line-height: 1.7;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 14px rgba(20, 30, 40, 0.06);
+    padding: 22px 20px;
+    margin-bottom: 18px;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .field:last-child {
+    margin-bottom: 0;
+  }
+
+  label.field-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1c2a38;
+    margin-bottom: 8px;
+  }
+
+  label.field-label .req {
+    color: #d9534f;
+    font-weight: 700;
+    margin-left: 4px;
+    font-size: 11px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #d7dce1;
+    border-radius: 8px;
+    background: #fbfcfd;
+    color: #1c2a38;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input[type="text"]:focus {
+    border-color: #4a90c4;
+    background: #fff;
+  }
+
+  /* ── 作業順序 ── */
+  .steps {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .step-num {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #eaf1f7;
+    color: #3d6a8c;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4px;
+  }
+
+  .step-row input[type="text"] {
+    flex: 1 1 auto;
+  }
+
+  .step-remove {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 34px;
+    border: none;
+    background: none;
+    color: #b0b8bf;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .step-remove:hover {
+    color: #d9534f;
+  }
+
+  .step-arrow {
+    text-align: center;
+    color: #b0b8bf;
+    font-size: 13px;
+    padding: 4px 0 4px 13px;
+  }
+
+  .add-step-btn {
+    margin-top: 10px;
+    align-self: flex-start;
+    padding: 8px 16px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #3d6a8c;
+    background: #eaf1f7;
+    border: 1px dashed #a9c3d6;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .add-step-btn:hover {
+    background: #ddeaf3;
+  }
+
+  /* ── チェックボックス群 ── */
+  .check-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border: 1px solid #d7dce1;
+    border-radius: 20px;
+    background: #fbfcfd;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+
+  .check-item input {
+    accent-color: #3d6a8c;
+  }
+
+  .check-item.checked {
+    border-color: #3d6a8c;
+    background: #eaf1f7;
+    color: #1c2a38;
+  }
+
+  .other-input {
+    margin-top: 10px;
+    display: none;
+  }
+
+  .other-input.show {
+    display: block;
+  }
+
+  /* ── フッターボタン ── */
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .btn-copy {
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    background: #3d6a8c;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn-copy:hover {
+    background: #325a78;
+  }
+
+  .btn-copy:disabled {
+    background: #a9c3d6;
+    cursor: default;
+  }
+
+  .btn-secondary {
+    background: #fff;
+    color: #3d6a8c;
+    border: 1px solid #a9c3d6;
+  }
+
+  .btn-secondary:hover {
+    background: #eaf1f7;
+  }
+
+  .copy-note {
+    text-align: center;
+    font-size: 11.5px;
+    color: #8a939c;
+  }
+
+  .copy-note.success {
+    color: #2f8f4e;
+    font-weight: 700;
+  }
+
+  @media (max-width: 420px) {
+    .card { padding: 18px 14px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="sheet">
+    <header>
+      <h1>作業ヒアリングシート</h1>
+      <p>現在の作業内容についてお聞かせください。<br>いただいた内容をもとに、効率化・自動化のご提案をいたします。</p>
+    </header>
+
+    <!-- 基本情報 -->
+    <div class="card">
+      <div class="field">
+        <label class="field-label">お名前<span class="req">必須</span></label>
+        <input type="text" id="userName" placeholder="例）山田 太郎">
+      </div>
+      <div class="field">
+        <label class="field-label">作業名<span class="req">必須</span></label>
+        <input type="text" id="taskName" placeholder="例）月次売上集計">
+      </div>
+    </div>
+
+    <!-- 作業順序 -->
+    <div class="card">
+      <div class="field" style="margin-bottom:0;">
+        <label class="field-label">作業順序<span class="req">必須</span></label>
+        <div class="steps" id="stepsContainer">
+          <!-- JSでステップ行を生成 -->
+        </div>
+        <button type="button" class="add-step-btn" id="addStepBtn">＋ 手順を追加</button>
+      </div>
+    </div>
+
+    <!-- 使用ツール -->
+    <div class="card">
+      <div class="field" style="margin-bottom:0;">
+        <label class="field-label">使用ツール</label>
+        <div class="check-group" id="toolGroup">
+          <label class="check-item"><input type="checkbox" value="エクセル">エクセル</label>
+          <label class="check-item"><input type="checkbox" value="ワード">ワード</label>
+          <label class="check-item"><input type="checkbox" value="スプレッドシート">スプレッドシート</label>
+          <label class="check-item"><input type="checkbox" value="ドキュメント">ドキュメント</label>
+          <label class="check-item"><input type="checkbox" value="その他" class="other-toggle">その他</label>
+        </div>
+        <div class="other-input" id="toolOtherWrap">
+          <input type="text" id="toolOther" placeholder="その他のツール名を入力">
+        </div>
+      </div>
+    </div>
+
+    <!-- 入力データの所在 -->
+    <div class="card">
+      <div class="field" style="margin-bottom:0;">
+        <label class="field-label">入力データの所在</label>
+        <div class="check-group" id="sourceGroup">
+          <label class="check-item"><input type="checkbox" value="メール">メール</label>
+          <label class="check-item"><input type="checkbox" value="書類">書類</label>
+          <label class="check-item"><input type="checkbox" value="エクセル">エクセル</label>
+          <label class="check-item"><input type="checkbox" value="ワード">ワード</label>
+          <label class="check-item"><input type="checkbox" value="スプレッドシート">スプレッドシート</label>
+          <label class="check-item"><input type="checkbox" value="ドキュメント">ドキュメント</label>
+          <label class="check-item"><input type="checkbox" value="電話">電話</label>
+          <label class="check-item"><input type="checkbox" value="メモ">メモ</label>
+          <label class="check-item"><input type="checkbox" value="その他" class="other-toggle">その他</label>
+        </div>
+        <div class="other-input" id="sourceOtherWrap">
+          <input type="text" id="sourceOther" placeholder="その他の所在を入力">
+        </div>
+      </div>
+    </div>
+
+    <!-- 提出の仕方 -->
+    <div class="card">
+      <div class="field" style="margin-bottom:0;">
+        <label class="field-label">提出の仕方</label>
+        <div class="check-group" id="submitGroup">
+          <label class="check-item"><input type="checkbox" value="メールにて文章">メールにて文章</label>
+          <label class="check-item"><input type="checkbox" value="エクセル">エクセル</label>
+          <label class="check-item"><input type="checkbox" value="ワード">ワード</label>
+          <label class="check-item"><input type="checkbox" value="スプレッドシート">スプレッドシート</label>
+          <label class="check-item"><input type="checkbox" value="ドキュメント">ドキュメント</label>
+          <label class="check-item"><input type="checkbox" value="PDF">PDF</label>
+          <label class="check-item"><input type="checkbox" value="電話">電話</label>
+          <label class="check-item"><input type="checkbox" value="その他" class="other-toggle">その他</label>
+        </div>
+        <div class="other-input" id="submitOtherWrap">
+          <input type="text" id="submitOther" placeholder="その他の提出方法を入力">
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn-copy" id="submitBtn">送信する</button>
+      <p class="copy-note" id="submitNote">お名前・作業名・作業順序を入力のうえ送信してください</p>
+      <button type="button" class="btn-copy btn-secondary" id="copyBtn">回答内容をコピーする（控え用）</button>
+      <p class="copy-note" id="copyNote"></p>
+    </div>
+  </div>
+
+<script>
+  // ★ GASウェブアプリをデプロイしたら /exec URLをここに貼り付け
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbybKkh-CyAISbFOK4H-Nys2CvDkgiN8CQ8Iq3H4eYFnGoK7zuAcE8EKWAXinIP3SUqJ/exec';
+
+  // ── 作業順序：ステップ行の追加・削除 ──
+  const stepsContainer = document.getElementById('stepsContainer');
+  const addStepBtn = document.getElementById('addStepBtn');
+  let stepCount = 0;
+
+  function addStep() {
+    stepCount++;
+
+    if (stepCount > 1) {
+      const arrow = document.createElement('div');
+      arrow.className = 'step-arrow';
+      arrow.textContent = '↓';
+      stepsContainer.appendChild(arrow);
+    }
+
+    const row = document.createElement('div');
+    row.className = 'step-row';
+    row.innerHTML = `
+      <div class="step-num">${stepCount}</div>
+      <input type="text" class="step-input" placeholder="作業手順${stepCount}を入力">
+      <button type="button" class="step-remove" title="この手順を削除">×</button>
+    `;
+    stepsContainer.appendChild(row);
+
+    row.querySelector('.step-remove').addEventListener('click', () => {
+      removeStep(row);
+    });
+  }
+
+  function removeStep(row) {
+    // 直前の矢印があれば一緒に削除
+    const prev = row.previousElementSibling;
+    if (prev && prev.classList.contains('step-arrow')) {
+      prev.remove();
+    } else {
+      const next = row.nextElementSibling;
+      if (next && next.classList.contains('step-arrow')) next.remove();
+    }
+    row.remove();
+    renumberSteps();
+  }
+
+  function renumberSteps() {
+    const rows = stepsContainer.querySelectorAll('.step-row');
+    stepCount = rows.length;
+    rows.forEach((row, i) => {
+      row.querySelector('.step-num').textContent = i + 1;
+      row.querySelector('.step-input').placeholder = `作業手順${i + 1}を入力`;
+    });
+  }
+
+  addStepBtn.addEventListener('click', addStep);
+
+  // 初期状態で3行表示
+  addStep();
+  addStep();
+  addStep();
+
+  // ── チェックボックス：見た目トグル＋その他欄の開閉 ──
+  function setupCheckGroup(groupId, otherWrapId) {
+    const group = document.getElementById(groupId);
+    const otherWrap = document.getElementById(otherWrapId);
+
+    group.querySelectorAll('.check-item').forEach(item => {
+      const input = item.querySelector('input');
+      input.addEventListener('change', () => {
+        item.classList.toggle('checked', input.checked);
+        if (input.classList.contains('other-toggle')) {
+          otherWrap.classList.toggle('show', input.checked);
+        }
+      });
+    });
+  }
+
+  setupCheckGroup('toolGroup', 'toolOtherWrap');
+  setupCheckGroup('sourceGroup', 'sourceOtherWrap');
+  setupCheckGroup('submitGroup', 'submitOtherWrap');
+
+  // ── チェック済み項目の取得（その他の自由記述も含める） ──
+  function getChecked(groupId, otherInputId) {
+    const group = document.getElementById(groupId);
+    const values = [];
+    group.querySelectorAll('input:checked').forEach(input => {
+      if (input.classList.contains('other-toggle')) {
+        const otherText = document.getElementById(otherInputId).value.trim();
+        values.push(otherText ? `その他（${otherText}）` : 'その他');
+      } else {
+        values.push(input.value);
+      }
+    });
+    return values;
+  }
+
+  // ── 入力内容の取得 ──
+  function collectFormData() {
+    const name = document.getElementById('userName').value.trim();
+    const taskName = document.getElementById('taskName').value.trim();
+
+    const steps = Array.from(document.querySelectorAll('.step-input'))
+      .map(i => i.value.trim())
+      .filter(v => v);
+
+    const tools = getChecked('toolGroup', 'toolOther');
+    const sources = getChecked('sourceGroup', 'sourceOther');
+    const submits = getChecked('submitGroup', 'submitOther');
+
+    return { name, taskName, steps, tools, sources, submits };
+  }
+
+  // ── 送信機能（GAS経由でスプレッドシート保存＋メール通知） ──
+  document.getElementById('submitBtn').addEventListener('click', () => {
+    const data = collectFormData();
+    const note = document.getElementById('submitNote');
+    const btn = document.getElementById('submitBtn');
+
+    if (!data.name || !data.taskName || data.steps.length === 0) {
+      note.textContent = 'お名前・作業名・作業順序（1つ以上）を入力してください';
+      note.classList.remove('success');
+      return;
+    }
+
+    if (!GAS_URL || GAS_URL.startsWith('ここに')) {
+      note.textContent = '送信先が未設定です（GAS_URLを設定してください）';
+      note.classList.remove('success');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '送信中...';
+    note.textContent = '';
+
+    fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(data)
+    }).then(() => {
+      note.textContent = '送信しました。ご協力ありがとうございました。';
+      note.classList.add('success');
+      btn.textContent = '送信する';
+      btn.disabled = false;
+    }).catch(() => {
+      note.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
+      note.classList.remove('success');
+      btn.textContent = '送信する';
+      btn.disabled = false;
+    });
+  });
+
+  // ── コピー機能（控え用） ──
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const data = collectFormData();
+
+    const lines = [
+      '【作業ヒアリングシート】',
+      `お名前：${data.name || '(未入力)'}`,
+      `作業名：${data.taskName || '(未入力)'}`,
+      '',
+      '■ 作業順序',
+      data.steps.length ? data.steps.map((s, i) => `${i + 1}. ${s}`).join('\n') : '(未入力)',
+      '',
+      `■ 使用ツール：${data.tools.length ? data.tools.join('、') : '(未選択)'}`,
+      `■ 入力データの所在：${data.sources.length ? data.sources.join('、') : '(未選択)'}`,
+      `■ 提出の仕方：${data.submits.length ? data.submits.join('、') : '(未選択)'}`,
+    ];
+
+    const text = lines.join('\n');
+    const note = document.getElementById('copyNote');
+
+    navigator.clipboard.writeText(text).then(() => {
+      note.textContent = 'コピーしました。';
+      note.classList.add('success');
+    }).catch(() => {
+      note.textContent = 'コピーに失敗しました。手動で選択してコピーしてください。';
+      note.classList.remove('success');
+    });
+  });
+</script>
+
+</body>
+</html>
