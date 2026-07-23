@@ -26,7 +26,7 @@ function doPost(e) {
   var sheet = ss.getSheetByName(CONFIG.sheetName);
   if (!sheet) {
     sheet = ss.insertSheet(CONFIG.sheetName);
-    sheet.appendRow(['タイムスタンプ', 'お名前', 'メールアドレス', '作業名', '作業順序', '使用ツール', '入力データの所在', '提出の仕方']);
+    sheet.appendRow(['タイムスタンプ', '企業名', '担当者名', 'メールアドレス', '作業名', '作業順序', '使用ツール', '入力データの所在', '提出の仕方']);
   }
 
   var steps = (data.steps || []).map(function (s, i) {
@@ -38,6 +38,7 @@ function doPost(e) {
 
   sheet.appendRow([
     new Date(),
+    data.companyName || '',
     data.name || '',
     data.email || '',
     data.taskName || '',
@@ -49,7 +50,7 @@ function doPost(e) {
 
   // 作業順序は手順ごとに改行しているため、セル内で折り返して全行見えるようにする
   var lastRow = sheet.getLastRow();
-  sheet.getRange(lastRow, 5).setWrap(true).setVerticalAlignment('top');
+  sheet.getRange(lastRow, 6).setWrap(true).setVerticalAlignment('top');
 
   sendNotifyEmail(data, ss.getUrl());
 
@@ -65,7 +66,8 @@ function sendNotifyEmail(data, sheetUrl) {
   var subject = '回答がありました。';
   var body =
     'ヒアリングシートに新しい回答がありました。\n\n' +
-    'お名前：' + (data.name || '') + '\n' +
+    '企業名：' + (data.companyName || '') + '\n' +
+    '担当者名：' + (data.name || '') + '\n' +
     '作業名：' + (data.taskName || '') + '\n\n' +
     'スプレッドシートはこちら：\n' + sheetUrl;
 
@@ -78,7 +80,8 @@ function sendCopyEmail(data, steps, tools, sources, submits) {
     (data.name || '') + ' 様\n\n' +
     'ヒアリングシートへのご回答ありがとうございました。\n' +
     '以下、ご回答内容の控えです。\n\n' +
-    'お名前：' + (data.name || '') + '\n' +
+    '企業名：' + (data.companyName || '') + '\n' +
+    '担当者名：' + (data.name || '') + '\n' +
     '作業名：' + (data.taskName || '') + '\n\n' +
     '■ 作業順序\n' + (steps || '(未入力)') + '\n\n' +
     '■ 使用ツール：' + (tools || '(未選択)') + '\n' +

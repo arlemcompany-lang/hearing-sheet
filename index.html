@@ -305,7 +305,11 @@
     <!-- 基本情報 -->
     <div class="card">
       <div class="field">
-        <label class="field-label">お名前<span class="req">必須</span></label>
+        <label class="field-label">企業名<span class="req">必須</span></label>
+        <input type="text" id="companyName" placeholder="例）株式会社アーレム">
+      </div>
+      <div class="field">
+        <label class="field-label">担当者名<span class="req">必須</span></label>
         <input type="text" id="userName" placeholder="例）山田 太郎">
       </div>
       <div class="field">
@@ -389,7 +393,7 @@
 
     <div class="actions">
       <button type="button" class="btn-copy" id="submitBtn">送信する</button>
-      <p class="copy-note" id="submitNote">お名前・作業名・作業順序を入力のうえ送信してください</p>
+      <p class="copy-note" id="submitNote">企業名・担当者名・作業名・作業順序を入力のうえ送信してください</p>
       <button type="button" class="btn-copy btn-secondary" id="copyBtn">回答内容をコピーする（控え用）</button>
       <p class="copy-note" id="copyNote"></p>
     </div>
@@ -486,6 +490,7 @@
 
   function saveDraft() {
     const draft = {
+      companyName: document.getElementById('companyName').value,
       name: document.getElementById('userName').value,
       email: document.getElementById('userEmail').value,
       taskName: document.getElementById('taskName').value,
@@ -533,6 +538,7 @@
       return;
     }
 
+    document.getElementById('companyName').value = draft.companyName || '';
     document.getElementById('userName').value = draft.name || '';
     document.getElementById('userEmail').value = draft.email || '';
     document.getElementById('taskName').value = draft.taskName || '';
@@ -577,6 +583,7 @@
 
   // ── 入力内容の取得 ──
   function collectFormData() {
+    const companyName = document.getElementById('companyName').value.trim();
     const name = document.getElementById('userName').value.trim();
     const email = document.getElementById('userEmail').value.trim();
     const taskName = document.getElementById('taskName').value.trim();
@@ -589,7 +596,7 @@
     const sources = getChecked('sourceGroup', 'sourceOther');
     const submits = getChecked('submitGroup', 'submitOther');
 
-    return { name, email, taskName, steps, tools, sources, submits };
+    return { companyName, name, email, taskName, steps, tools, sources, submits };
   }
 
   // ── 送信機能（GAS経由でスプレッドシート保存＋メール通知） ──
@@ -598,8 +605,8 @@
     const note = document.getElementById('submitNote');
     const btn = document.getElementById('submitBtn');
 
-    if (!data.name || !data.taskName || data.steps.length === 0) {
-      note.textContent = 'お名前・作業名・作業順序（1つ以上）を入力してください';
+    if (!data.companyName || !data.name || !data.taskName || data.steps.length === 0) {
+      note.textContent = '企業名・担当者名・作業名・作業順序（1つ以上）を入力してください';
       note.classList.remove('success');
       return;
     }
@@ -638,7 +645,8 @@
 
     const lines = [
       '【作業ヒアリングシート】',
-      `お名前：${data.name || '(未入力)'}`,
+      `企業名：${data.companyName || '(未入力)'}`,
+      `担当者名：${data.name || '(未入力)'}`,
       `メールアドレス：${data.email || '(未入力)'}`,
       `作業名：${data.taskName || '(未入力)'}`,
       '',
