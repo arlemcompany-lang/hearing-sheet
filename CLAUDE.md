@@ -33,12 +33,18 @@ GitHub Pages上のWebフォームとして公開予定。
 ## ファイル構成
 | ファイル | 役割 |
 |---------|------|
-| `index.html` | ヒアリングフォーム本体 |
-| `Code.gs` | GAS側の処理（スプレッドシート追記＋メール通知）。リポジトリ管理用の原本 |
-| `Code_貼り付け用.txt` | `Code.gs` と同内容。Apps Scriptエディタへ貼り付ける際はこちらを使う（コピー時の文字欠け対策） |
+| `index.html` | ヒアリングフォーム本体（GitHub Pages） |
+| `Code.gs` | GAS側の処理（スプレッドシート追記＋メール通知）。clasp管理の原本 |
+| `Code_貼り付け用.txt` | 旧・手動貼り付け運用の名残（clasp導入後は使わない。参考用に残置） |
 | `ヒヤリングシート.md` | ヒアリング項目一覧（テキストテンプレート、参考用） |
+| `.clasp.json` / `.claspignore` | clasp設定。scriptId: `1UNMDFR0D9TuJHrpI_AyebG2E4sUe2UyOhabc00tw1G5JvdOzWgWP1kV6`。push対象は`Code.gs`と`appsscript.json`のみ |
+
+## GASのデプロイ方法（2026-07-23〜：clasp運用に変更）
+`Code.gs` を編集したら、以下でリモートに反映する（`hello@arlem-ai.com` でclasp loginが必要）。
+1. `clasp push` — スクリプト本体を更新
+2. `clasp deploy -i AKfycbybKkh-CyAISbFOK4H-Nys2CvDkgiN8CQ8Iq3H4eYFnGoK7zuAcE8EKWAXinIP3SUqJ -d "変更内容"` — 既存デプロイ（index.htmlのGAS_URLと同じ）を新バージョンに更新。`-i`を付けないと別デプロイ（別URL）が作られてしまうので注意
+- Apps Scriptエディタでの手動貼り付けはもう不要
 
 ## 開発時の注意
 - 項目の追加・変更があれば `index.html` 内のチェックボックス群（`toolGroup`・`sourceGroup`・`submitGroup`）と、`Code.gs` のスプレッドシート列（ヘッダー行）を両方更新する
-- GASコードを更新したら `Code.gs` と `Code_貼り付け用.txt` の両方を同じ内容にしておく
-- コード（GAS等）をやり取りする際はチャットのコードブロックではなくtxtファイル経由で渡す
+- スプレッドシートの列を増減する場合、実際のスプレッドシートのヘッダー行も手動で合わせる必要がある（`Code.gs`のappendRowはヘッダーを自動更新しない。既存シートがある限り新規作成時のヘッダー行コードは実行されないため）
