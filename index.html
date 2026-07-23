@@ -350,10 +350,10 @@
       </div>
     </div>
 
-    <!-- 入力データの所在 -->
+    <!-- 入力データ元 -->
     <div class="card">
       <div class="field" style="margin-bottom:0;">
-        <label class="field-label">入力データの所在</label>
+        <label class="field-label">入力データ元</label>
         <div class="check-group" id="sourceGroup">
           <label class="check-item"><input type="checkbox" value="メール">メール</label>
           <label class="check-item"><input type="checkbox" value="書類">書類</label>
@@ -654,7 +654,7 @@
       data.steps.length ? data.steps.map((s, i) => `${i + 1}. ${s}`).join('\n') : '(未入力)',
       '',
       `■ 使用ツール：${data.tools.length ? data.tools.join('、') : '(未選択)'}`,
-      `■ 入力データの所在：${data.sources.length ? data.sources.join('、') : '(未選択)'}`,
+      `■ 入力データ元：${data.sources.length ? data.sources.join('、') : '(未選択)'}`,
       `■ 提出の仕方：${data.submits.length ? data.submits.join('、') : '(未選択)'}`,
     ];
 

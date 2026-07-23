@@ -26,7 +26,7 @@ function doPost(e) {
   var sheet = ss.getSheetByName(CONFIG.sheetName);
   if (!sheet) {
     sheet = ss.insertSheet(CONFIG.sheetName);
-    sheet.appendRow(['タイムスタンプ', '企業名', '担当者名', 'メールアドレス', '作業名', '作業順序', '使用ツール', '入力データの所在', '提出の仕方']);
+    sheet.appendRow(['タイムスタンプ', '企業名', '担当者名', 'メールアドレス', '作業名', '作業順序', '使用ツール', '入力データ元', '提出の仕方']);
   }
 
   var steps = (data.steps || []).map(function (s, i) {
@@ -85,7 +85,7 @@ function sendCopyEmail(data, steps, tools, sources, submits) {
     '作業名：' + (data.taskName || '') + '\n\n' +
     '■ 作業順序\n' + (steps || '(未入力)') + '\n\n' +
     '■ 使用ツール：' + (tools || '(未選択)') + '\n' +
-    '■ 入力データの所在：' + (sources || '(未選択)') + '\n' +
+    '■ 入力データ元：' + (sources || '(未選択)') + '\n' +
     '■ 提出の仕方：' + (submits || '(未選択)') + '\n';
 
   MailApp.sendEmail(data.email, subject, body);
