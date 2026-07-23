@@ -9,7 +9,7 @@
 
   body {
     font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-    background: #f4f6f8;
+    background: #f5f0e6 url('images/hero-bg.png') center center / cover no-repeat fixed;
     color: #2c333a;
     min-height: 100vh;
     display: flex;
@@ -17,14 +17,55 @@
     padding: 32px 16px 80px;
   }
 
+  @media (max-width: 640px) {
+    body { background-attachment: scroll; }
+  }
+
   .sheet {
     width: 100%;
     max-width: 640px;
   }
 
+  header,
+  .card {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 20px rgba(20, 30, 40, 0.08);
+  }
+
+  header::before,
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1a8faf, #f97316);
+  }
+
+  header::after,
+  .card::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(26, 143, 175, 0.14) 0%, rgba(26, 143, 175, 0) 72%);
+    pointer-events: none;
+  }
+
   header {
     text-align: center;
     margin-bottom: 28px;
+    padding: 22px 20px 20px;
   }
 
   header h1 {
@@ -42,10 +83,7 @@
   }
 
   .card {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 2px 14px rgba(20, 30, 40, 0.06);
-    padding: 22px 20px;
+    padding: 24px 20px 22px;
     margin-bottom: 18px;
   }
 
@@ -387,6 +425,7 @@
 
     row.querySelector('.step-remove').addEventListener('click', () => {
       removeStep(row);
+      saveDraft();
     });
   }
 
@@ -412,12 +451,10 @@
     });
   }
 
-  addStepBtn.addEventListener('click', addStep);
-
-  // 初期状態で3行表示
-  addStep();
-  addStep();
-  addStep();
+  addStepBtn.addEventListener('click', () => {
+    addStep();
+    saveDraft();
+  });
 
   // ── チェックボックス：見た目トグル＋その他欄の開閉 ──
   function setupCheckGroup(groupId, otherWrapId) {
@@ -438,6 +475,90 @@
   setupCheckGroup('toolGroup', 'toolOtherWrap');
   setupCheckGroup('sourceGroup', 'sourceOtherWrap');
   setupCheckGroup('submitGroup', 'submitOtherWrap');
+
+  // ── 下書き保存（送信するまでlocalStorageに自動保存） ──
+  const DRAFT_KEY = 'hearingSheetDraft';
+
+  function getCheckedValues(groupId) {
+    return Array.from(document.getElementById(groupId).querySelectorAll('input:checked'))
+      .map(input => input.value);
+  }
+
+  function saveDraft() {
+    const draft = {
+      name: document.getElementById('userName').value,
+      email: document.getElementById('userEmail').value,
+      taskName: document.getElementById('taskName').value,
+      steps: Array.from(document.querySelectorAll('.step-input')).map(i => i.value),
+      tools: getCheckedValues('toolGroup'),
+      toolOther: document.getElementById('toolOther').value,
+      sources: getCheckedValues('sourceGroup'),
+      sourceOther: document.getElementById('sourceOther').value,
+      submits: getCheckedValues('submitGroup'),
+      submitOther: document.getElementById('submitOther').value
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  }
+
+  function restoreCheckGroup(groupId, values, otherInputId, otherValue, otherWrapId) {
+    if (!values || !values.length) return;
+    document.getElementById(groupId).querySelectorAll('.check-item').forEach(item => {
+      const input = item.querySelector('input');
+      if (values.includes(input.value)) {
+        input.checked = true;
+        item.classList.add('checked');
+      }
+    });
+    if (otherValue) {
+      document.getElementById(otherInputId).value = otherValue;
+    }
+    const otherInput = document.getElementById(groupId).querySelector('.other-toggle');
+    if (otherInput && otherInput.checked) {
+      document.getElementById(otherWrapId).classList.add('show');
+    }
+  }
+
+  function restoreDraft() {
+    let draft = null;
+    try {
+      draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
+    } catch (e) {
+      draft = null;
+    }
+
+    if (!draft) {
+      addStep();
+      addStep();
+      addStep();
+      return;
+    }
+
+    document.getElementById('userName').value = draft.name || '';
+    document.getElementById('userEmail').value = draft.email || '';
+    document.getElementById('taskName').value = draft.taskName || '';
+
+    const steps = (draft.steps && draft.steps.length) ? draft.steps : ['', '', ''];
+    steps.forEach(value => {
+      addStep();
+      const inputs = document.querySelectorAll('.step-input');
+      inputs[inputs.length - 1].value = value;
+    });
+
+    restoreCheckGroup('toolGroup', draft.tools, 'toolOther', draft.toolOther, 'toolOtherWrap');
+    restoreCheckGroup('sourceGroup', draft.sources, 'sourceOther', draft.sourceOther, 'sourceOtherWrap');
+    restoreCheckGroup('submitGroup', draft.submits, 'submitOther', draft.submitOther, 'submitOtherWrap');
+  }
+
+  function clearDraft() {
+    localStorage.removeItem(DRAFT_KEY);
+  }
+
+  // 初期状態：保存された下書きがあれば復元、なければ3行表示
+  restoreDraft();
+
+  // 入力・選択のたびに下書きを自動保存
+  document.querySelector('.sheet').addEventListener('input', saveDraft);
+  document.querySelector('.sheet').addEventListener('change', saveDraft);
 
   // ── チェック済み項目の取得（その他の自由記述も含める） ──
   function getChecked(groupId, otherInputId) {
@@ -501,8 +622,8 @@
     }).then(() => {
       note.textContent = '送信しました。ご協力ありがとうございました。';
       note.classList.add('success');
-      btn.textContent = '送信する';
-      btn.disabled = false;
+      clearDraft();
+      setTimeout(() => { location.reload(); }, 1500);
     }).catch(() => {
       note.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
       note.classList.remove('success');
